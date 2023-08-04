@@ -4,7 +4,7 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about)]
-/// Encodes or Decodes the input string. Must use either 'encode' or 'decode' flag.
+/// Encodes or Decodes the input string. Must use either 'encode' or 'decode' flag. String copied to clipboard.
 struct Args {
 
     /// String to encode/decode.

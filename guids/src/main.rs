@@ -4,7 +4,7 @@ use guid_create::GUID;
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about)]
-/// Generates a guid.
+/// Generates a guid. Guid copied to clipboard.
 struct Args {
 
     /// Generates an empty guid (00000000-0000-0000-0000-000000000000).
