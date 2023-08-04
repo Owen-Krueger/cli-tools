@@ -2,5 +2,5 @@
 
 members = [
     "base64",
-    "guids"
+    "guid"
 ]
