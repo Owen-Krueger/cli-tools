@@ -36,5 +36,5 @@ jobs:
           bin: guid,base64
           tar: unix
           zip: windows
-          archive: $bin-$tag-$target
+          archive: app-$tag-$target
           token: ${{ secrets.GITHUB_TOKEN }}
