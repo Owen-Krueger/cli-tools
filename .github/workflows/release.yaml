@@ -6,32 +6,29 @@ on:
 
 jobs:
   release:
-    name: Release ${{ matrix.app }} for ${{ matrix.target }}
+    name: Release ${{ matrix.app }} for ${{ matrix.target.name }}
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
+        target: [
+            { name: x86_64-pc-windows-gnu, extension: zip },
+            { name: x86_64-unknown-linux-musl, extension: tar.gz },
+            { name: x86_64-apple-darwin, extension: zip }
+        ]
         app: [ guid , base64]
-        include:
-          - target: x86_64-pc-windows-gnu
-            archive: zip
-          - target: x86_64-unknown-linux-musl
-            archive: tar.gz tar.xz tar.zst
-          - target: x86_64-apple-darwin
-            archive: zip
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile and release ${{ matrix.app }} for ${{ matrix.target }}
+      - name: Compile and release ${{ matrix.app }} for ${{ matrix.target.name }}
         uses: rust-build/rust-build.action@v1.4.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           SRC_DIR: ${{ matrix.app }}
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_NAME: ${{ matrix.app }}-${{ matrix.target }}-${{ github.event.release.tag_name }}.${{ matrix.archive }}
-          # ARCHIVE_TYPES: ${{ matrix.extension }}
+          RUSTTARGET: ${{ matrix.target.name }}
+          ARCHIVE_NAME: ${{ matrix.app }}-${{ matrix.target.name }}-${{ github.event.release.tag_name }}.${{ matrix.target.extension }}
           EXTRA_FILES: LICENSE ${{ matrix.app }}/README.md
