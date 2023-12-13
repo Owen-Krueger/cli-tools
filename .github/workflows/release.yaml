@@ -23,12 +23,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Move to app directory
+        run: cd ${{ matrix.app }}
+
       - name: Compile and release ${{ matrix.app }} for ${{ matrix.target.name }}
         uses: rust-build/rust-build.action@v1.4.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          SRC_DIR: ${{ matrix.app }}
           RUSTTARGET: ${{ matrix.target.name }}
           ARCHIVE_NAME: ${{ matrix.app }}-${{ matrix.target.name }}-${{ github.event.release.tag_name }}.${{ matrix.target.extension }}
           EXTRA_FILES: LICENSE ${{ matrix.app }}/README.md
