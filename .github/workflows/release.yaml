@@ -6,30 +6,32 @@ on:
 
 jobs:
   release:
-    name: Release ${{ matrix.target.name }}
+    name: Release ${{ matrix.app }} for ${{ matrix.target }}
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        target: [
-          { name: x86_64-pc-windows-gnu, extension: zip },
-          { name: x86_64-unknown-linux-musl, extension: tar.gz },
-          { name: x86_64-apple-darwin, extension: zip }
-        ]
-        tool: [ guid , base64]
+        app: [ guid , base64]
+        include:
+          - target: x86_64-pc-windows-gnu
+            archive: zip
+          - target: x86_64-unknown-linux-musl
+            archive: tar.gz tar.xz tar.zst
+          - target: x86_64-apple-darwin
+            archive: zip
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile and release ${{ matrix.tool }} for ${{ matrix.target.name }}
+      - name: Compile and release ${{ matrix.app }} for ${{ matrix.target }}
         uses: rust-build/rust-build.action@v1.4.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          SRC_DIR: ${{ matrix.tool }}
-          RUSTTARGET: ${{ matrix.target.name }}
-          ARCHIVE_NAME: ${{ matrix.tool }}-${{ matrix.target.name }}-${{ github.event.release.tag_name }}.${{ matrix.extension }}
-          ARCHIVE_TYPES: ${{ matrix.extension }}
-          EXTRA_FILES: LICENSE ${{ matrix.tool }}/README.md
+          SRC_DIR: ${{ matrix.app }}
+          RUSTTARGET: ${{ matrix.target }}
+          ARCHIVE_NAME: ${{ matrix.app }}-${{ matrix.target }}-${{ github.event.release.tag_name }}.${{ matrix.archive }}
+          # ARCHIVE_TYPES: ${{ matrix.extension }}
+          EXTRA_FILES: LICENSE ${{ matrix.app }}/README.md
